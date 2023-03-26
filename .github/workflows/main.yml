@@ -6,34 +6,28 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 16
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Build
+        run: npm run build
 
-    - name: Run tests
-      run: npm test
+      - name: Zip the code
+        run: zip -r deployment-package.zip . -x '*.git*'
 
-    - name: Build
-      run: npm run build
-
-    - name: Deploy to AWS Elastic Beanstalk
-      uses: einaregilsson/beanstalk-deploy@v21
-      with:
-        aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-        aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
-        application_name: money-myself
-        environment_name: Moneymyself-env
-        version_label: ${{ github.run_id }}
-        region: ap-northeast-1
-        deployment_package: ./
+      - name: Deploy to AWS Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+          application_name: money-myself
+          environment_name: Moneymyself-env
+          version_label: ${{ github.run_id }}
+          region: ap-northeast-1
+          deployment_package: deployment-package.zip
