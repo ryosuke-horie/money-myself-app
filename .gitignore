@@ -36,3 +36,6 @@ lerna-debug.log*
 
 # env
 .env
+
+# デプロイ用のZipファイル
+*.zip
