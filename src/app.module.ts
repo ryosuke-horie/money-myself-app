@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// 開発環境のみdotenvを読み込む
 import * as dotenv from 'dotenv';
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config();
